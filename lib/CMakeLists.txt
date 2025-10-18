@@ -24,13 +24,19 @@ include_directories(
 )
 
 # Library
-add_library(obindex2
+add_library(obindex2 SHARED
   src/binary_descriptor.cc
   src/binary_tree_node.cc
   src/binary_tree.cc
   src/binary_index.cc
 )
-target_include_directories(obindex2 PUBLIC include)
+
+target_include_directories(obindex2
+  PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:include>
+)
+
 target_link_libraries(obindex2
   PUBLIC
   ${OpenCV_LIBRARIES}
