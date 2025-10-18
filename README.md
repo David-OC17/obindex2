@@ -2,7 +2,7 @@
 
 OBIndex2 is an open source C++ library for indexing images. It implements a hierarchical indexing scheme to match binary descriptors, which is used as an incremental Bag-Of-Words (BoW) visual vocabulary. This index is combined with an inverted file in order to provide an image database, that can be queried for finding similar images. This online binary visual vocabulary tries to solve the main drawbacks that classical BoW approaches present, avoiding the training step and adapting the visual dictionary to the operating environment.
 
-OBIndex2 is released as a standalone library or ROS package, and relies on OpenCV 3.x and Boost libraries. It can be used with any binary descriptor computed using the OpenCV format.
+OBIndex2 is released as a standalone library or ROS2 package, and relies on OpenCV 3.x, Catch2, and Boost libraries. It can be used with any binary descriptor computed using the OpenCV format.
 
 The library is an **evolution** of [OBIndex](http://github.com/emiliofidalgo/obindex). The main improvements included are:
 * OBIndex2 provides a policy for deleting visual words, which reduces the size of the visual vocabulary with little impact on the performance.
@@ -40,37 +40,41 @@ Eprint = {arXiv:1802.05909}
 
 # Installation
 
-## ROS
+## ROS2
 
-1. First of all, you have to install the following dependencies:
-  
+1. First, install the required dependencies:
 
+```bash
+sudo apt-get install libboost-system-dev libboost-filesystem-dev
 ```
-  sudo apt-get install libboost-system-dev libboost-filesystem-dev
-  ```
 
-2. If you are going to use the library as a ROS package, clone the repository into your workspace:
-  
+2. Clone the repository into your ROS2 workspace:
 
+```bash
+cd ~/your_ros2_ws/src
+git clone http://github.com/emiliofidalgo/obindex2.git
 ```
-  cd ~/your_workspace/src
-  git clone http://github.com/emiliofidalgo/obindex2.git
-  ```
 
-3. Next, compile the package using, as usual, the `catkin_make` command:
-  
+3. Build the workspace using `colcon`:
 
+```bash
+cd ~/your_ros2_ws
+colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release
 ```
-  cd ..
-  catkin_make -DCMAKE_BUILD_TYPE=Release
-  ```
 
-4. Finally, you can run an example with:
-  
+4. Source the workspace:
 
+```bash
+source install/setup.bash
 ```
-  rosrun obindex2 test_search /directory/of/images
-  ```
+
+5. Run an example:
+
+```bash
+ros2 run obindex2 test_search /directory/of/images
+```
+
+---
 
 ## Standalone
 
