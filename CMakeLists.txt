@@ -6,7 +6,6 @@ find_package(rclcpp REQUIRED)
 
 add_subdirectory(lib)
 
-# Export
 ament_export_include_directories(lib/include)
 ament_export_libraries(obindex2)
 ament_export_dependencies(rclcpp)

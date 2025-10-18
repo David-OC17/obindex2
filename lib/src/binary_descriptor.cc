@@ -1,21 +1,22 @@
 /**
-* This file is part of obindex2.
-*
-* Copyright (C) 2017 Emilio Garcia-Fidalgo <emilio.garcia@uib.es> (University of the Balearic Islands)
-*
-* obindex2 is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* obindex2 is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with obindex2. If not, see <http://www.gnu.org/licenses/>.
-*/
+ * This file is part of obindex2.
+ *
+ * Copyright (C) 2017 Emilio Garcia-Fidalgo <emilio.garcia@uib.es> (University
+ * of the Balearic Islands)
+ *
+ * obindex2 is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * obindex2 is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with obindex2. If not, see <http://www.gnu.org/licenses/>.
+ */
 
 #include "obindex2/binary_descriptor.h"
 
@@ -53,16 +54,13 @@ BinaryDescriptor::BinaryDescriptor(const cv::Mat& desc) {
   memcpy(bits_, chars, sizeof(unsigned char) * size_in_bytes_);
 }
 
-BinaryDescriptor::BinaryDescriptor(const BinaryDescriptor& bd) :
-    size_in_bytes_(bd.size_in_bytes_),
-    size_in_bits_(bd.size_in_bits_) {
+BinaryDescriptor::BinaryDescriptor(const BinaryDescriptor& bd)
+    : size_in_bytes_(bd.size_in_bytes_), size_in_bits_(bd.size_in_bits_) {
   bits_ = new unsigned char[size_in_bytes_];
   memcpy(bits_, bd.bits_, sizeof(unsigned char) * size_in_bytes_);
 }
 
-BinaryDescriptor::~BinaryDescriptor() {
-  delete [] bits_;
-}
+BinaryDescriptor::~BinaryDescriptor() { delete[] bits_; }
 
 cv::Mat BinaryDescriptor::toCvMat() {
   cv::Mat m = cv::Mat::zeros(1, size_in_bytes_, CV_8U);

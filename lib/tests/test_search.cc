@@ -1,59 +1,57 @@
 /**
-* This file is part of obindex2.
-*
-* Copyright (C) 2017 Emilio Garcia-Fidalgo <emilio.garcia@uib.es> (University of the Balearic Islands)
-*
-* obindex2 is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* obindex2 is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with obindex2. If not, see <http://www.gnu.org/licenses/>.
-*/
+ * This file is part of obindex2.
+ *
+ * Copyright (C) 2017 Emilio Garcia-Fidalgo <emilio.garcia@uib.es> (University
+ * of the Balearic Islands)
+ *
+ * obindex2 is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * obindex2 is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with obindex2. If not, see <http://www.gnu.org/licenses/>.
+ */
 
+#include <boost/filesystem.hpp>
 #include <chrono>
 #include <cstdio>
 #include <iostream>
-
-#include <boost/filesystem.hpp>
 #include <opencv2/xfeatures2d.hpp>
 
 #include "obindex2/binary_index.h"
 
 void getFilenames(const std::string& directory,
                   std::vector<std::string>* filenames) {
-    using namespace boost::filesystem;
+  using namespace boost::filesystem;
 
-    filenames->clear();
-    path dir(directory);
+  filenames->clear();
+  path dir(directory);
 
-    // Retrieving, sorting and filtering filenames.
-    std::vector<path> entries;
-    copy(directory_iterator(dir), directory_iterator(), back_inserter(entries));
-    sort(entries.begin(), entries.end());
-    for (auto it = entries.begin(); it != entries.end(); it++) {
-        std::string ext = it->extension().c_str();
-        std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+  // Retrieving, sorting and filtering filenames.
+  std::vector<path> entries;
+  copy(directory_iterator(dir), directory_iterator(), back_inserter(entries));
+  sort(entries.begin(), entries.end());
+  for (auto it = entries.begin(); it != entries.end(); it++) {
+    std::string ext = it->extension().c_str();
+    std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
 
-        if (ext == ".png" || ext == ".jpg" ||
-            ext == ".ppm" || ext == ".jpeg") {
-            filenames->push_back(it->string());
-        }
+    if (ext == ".png" || ext == ".jpg" || ext == ".ppm" || ext == ".jpeg") {
+      filenames->push_back(it->string());
     }
+  }
 }
 
 int main(int argc, char** argv) {
   // Creating feature detector and descriptor
-  cv::Ptr<cv::FastFeatureDetector> det =
-          cv::FastFeatureDetector::create();
+  cv::Ptr<cv::FastFeatureDetector> det = cv::FastFeatureDetector::create();
   cv::Ptr<cv::xfeatures2d::BriefDescriptorExtractor> des =
-          cv::xfeatures2d::BriefDescriptorExtractor::create();
+      cv::xfeatures2d::BriefDescriptorExtractor::create();
 
   // Loading image filenames
   std::vector<std::string> filenames;
@@ -110,23 +108,23 @@ int main(int argc, char** argv) {
 
     // Showing results
     for (int j = 0; j < std::min(5, static_cast<int>(image_matches.size()));
-                                                                          j++) {
-      std::cout << "Cand: " << image_matches[j].image_id <<  ", " <<
-                   "Score: " << image_matches[j].score << std::endl;
+         j++) {
+      std::cout << "Cand: " << image_matches[j].image_id << ", "
+                << "Score: " << image_matches[j].score << std::endl;
     }
 
-    std::cout << "Total features found in the image: " <<
-                                          kps.size() << std::endl;
-    std::cout << "Total matches found against the index: " <<
-                                          matches.size() << std::endl;
-    std::cout << "Total index size BEFORE UPDATE: " <<
-                                          index.numDescriptors() << std::endl;
+    std::cout << "Total features found in the image: " << kps.size()
+              << std::endl;
+    std::cout << "Total matches found against the index: " << matches.size()
+              << std::endl;
+    std::cout << "Total index size BEFORE UPDATE: " << index.numDescriptors()
+              << std::endl;
     // Updating the index
     // Matched descriptors are used to update the index and the remaining ones
     // are added as new visual words
     index.addImage(i, kps, dscs, matches);
-    std::cout << "Total index size AFTER UPDATE: " <<
-                                          index.numDescriptors() << std::endl;
+    std::cout << "Total index size AFTER UPDATE: " << index.numDescriptors()
+              << std::endl;
 
     // Reindexing features every 500 images
     if (i % 250 == 0) {
@@ -139,7 +137,8 @@ int main(int argc, char** argv) {
     // index.getMatchings(kps, matches, &point_matches);
     // obindex2::PointMatches pmatches = point_matches[i - 1];
 
-    // std::cout << "Matchings with the previous image: " << pmatches.query.size();
+    // std::cout << "Matchings with the previous image: " <<
+    // pmatches.query.size();
 
     // for (unsigned j = 0; j < pmatches.query.size(); j++) {
     //   cv::Point2f q = pmatches.query[j];
@@ -156,8 +155,8 @@ int main(int argc, char** argv) {
   auto end = std::chrono::steady_clock::now();
   auto diff = end - start;
 
-  std::cout << std::chrono::duration<double, std::milli>(diff).count()
-      << " ms" << std::endl;
+  std::cout << std::chrono::duration<double, std::milli>(diff).count() << " ms"
+            << std::endl;
 
   return 0;  // Correct test
 }

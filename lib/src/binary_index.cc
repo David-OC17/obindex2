@@ -1,45 +1,44 @@
 /**
-* This file is part of obindex2.
-*
-* Copyright (C) 2017 Emilio Garcia-Fidalgo <emilio.garcia@uib.es> (University of the Balearic Islands)
-*
-* obindex2 is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* obindex2 is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with obindex2. If not, see <http://www.gnu.org/licenses/>.
-*/
+ * This file is part of obindex2.
+ *
+ * Copyright (C) 2017 Emilio Garcia-Fidalgo <emilio.garcia@uib.es> (University
+ * of the Balearic Islands)
+ *
+ * obindex2 is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * obindex2 is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with obindex2. If not, see <http://www.gnu.org/licenses/>.
+ */
 
 #include "obindex2/binary_index.h"
 
 namespace obindex2 {
 
-ImageIndex::ImageIndex(const unsigned k,
-                       const unsigned s,
-                       const unsigned t,
+ImageIndex::ImageIndex(const unsigned k, const unsigned s, const unsigned t,
                        const MergePolicy merge_policy,
                        const bool purge_descriptors,
-                       const unsigned min_feat_apps) :
-    k_(k),
-    s_(s),
-    t_(t),
-    init_(false),
-    nimages_(0),
-    ndesc_(0),
-    merge_policy_(merge_policy),
-    purge_descriptors_(purge_descriptors),
-    min_feat_apps_(min_feat_apps) {
-      // Validating the corresponding parameters
-      assert(k_ > 1);
-      assert(k_ < s_);
-      assert(min_feat_apps > 0);
+                       const unsigned min_feat_apps)
+    : k_(k),
+      s_(s),
+      t_(t),
+      init_(false),
+      nimages_(0),
+      ndesc_(0),
+      merge_policy_(merge_policy),
+      purge_descriptors_(purge_descriptors),
+      min_feat_apps_(min_feat_apps) {
+  // Validating the corresponding parameters
+  assert(k_ > 1);
+  assert(k_ < s_);
+  assert(min_feat_apps > 0);
 }
 
 void ImageIndex::addImage(const unsigned image_id,
@@ -77,9 +76,9 @@ void ImageIndex::addImage(const unsigned image_id,
 }
 
 void ImageIndex::addImage(const unsigned image_id,
-                const std::vector<cv::KeyPoint>& kps,
-                const cv::Mat& descs,
-                const std::vector<cv::DMatch>& matches) {
+                          const std::vector<cv::KeyPoint>& kps,
+                          const cv::Mat& descs,
+                          const std::vector<cv::DMatch>& matches) {
   // --- Adding new features
   // All features
   std::set<int> points;
@@ -95,9 +94,8 @@ void ImageIndex::addImage(const unsigned image_id,
 
   // Computing the difference
   std::set<int> diff;
-  std::set_difference(points.begin(), points.end(),
-                      matched_points.begin(), matched_points.end(),
-                      std::inserter(diff, diff.end()));
+  std::set_difference(points.begin(), points.end(), matched_points.begin(),
+                      matched_points.end(), std::inserter(diff, diff.end()));
 
   // Inserting new features into the index.
   for (auto it = diff.begin(); it != diff.end(); it++) {
@@ -120,8 +118,8 @@ void ImageIndex::addImage(const unsigned image_id,
     int qindex = matches[match_ind].queryIdx;
     int tindex = matches[match_ind].trainIdx;
 
-    BinaryDescriptorPtr q_d = std::make_shared<BinaryDescriptor>
-                                                            (descs.row(qindex));
+    BinaryDescriptorPtr q_d =
+        std::make_shared<BinaryDescriptor>(descs.row(qindex));
     BinaryDescriptorPtr t_d = id_to_desc_[tindex];
 
     // Merge and replace according to the merging policy
@@ -150,8 +148,7 @@ void ImageIndex::addImage(const unsigned image_id,
 
 void ImageIndex::searchImages(const cv::Mat& descs,
                               const std::vector<cv::DMatch>& gmatches,
-                              std::vector<ImageMatch>* img_matches,
-                              bool sort) {
+                              std::vector<ImageMatch>* img_matches, bool sort) {
   // Initializing the resulting structure
   img_matches->resize(nimages_);
   for (unsigned i = 0; i < nimages_; i++) {
@@ -189,8 +186,8 @@ void ImageIndex::searchImages(const cv::Mat& descs,
     double tfidf = tf * idf;
 
     for (unsigned i = 0; i < inv_index_[desc].size(); i++) {
-        int im = inv_index_[desc][i].image_id;
-        img_matches->at(im).score += tfidf;
+      int im = inv_index_[desc][i].image_id;
+      img_matches->at(im).score += tfidf;
     }
   }
 
@@ -202,20 +199,17 @@ void ImageIndex::searchImages(const cv::Mat& descs,
 void ImageIndex::initTrees() {
   // Creating the trees
   BinaryDescriptorSetPtr dset_ptr =
-                std::make_shared<BinaryDescriptorSet>(dset_);
+      std::make_shared<BinaryDescriptorSet>(dset_);
 
   for (unsigned i = 0; i < t_; i++) {
-    BinaryTreePtr tree_ptr =
-              std::make_shared<BinaryTree>(dset_ptr, i, k_, s_);
+    BinaryTreePtr tree_ptr = std::make_shared<BinaryTree>(dset_ptr, i, k_, s_);
     trees_.push_back(tree_ptr);
   }
 }
 
 void ImageIndex::searchDescriptors(
-                              const cv::Mat& descs,
-                              std::vector<std::vector<cv::DMatch> >* matches,
-                              const unsigned knn,
-                              const unsigned checks) {
+    const cv::Mat& descs, std::vector<std::vector<cv::DMatch> >* matches,
+    const unsigned knn, const unsigned checks) {
   matches->clear();
   for (int i = 0; i < descs.rows; i++) {
     // Creating the corresponding descriptor
@@ -249,8 +243,7 @@ void ImageIndex::deleteDescriptor(const unsigned desc_id) {
 
 void ImageIndex::searchDescriptor(BinaryDescriptorPtr q,
                                   std::vector<BinaryDescriptorPtr>* neigh,
-                                  std::vector<double>* distances,
-                                  unsigned knn,
+                                  std::vector<double>* distances, unsigned knn,
                                   unsigned checks) {
   unsigned points_searched = 0;
   NodePriorityQueue pq;
@@ -267,8 +260,8 @@ void ImageIndex::searchDescriptor(BinaryDescriptorPtr q,
     rs.push_back(tr);
   }
 
-  // Searching in the trees
-  #pragma omp parallel for
+// Searching in the trees
+#pragma omp parallel for
   for (unsigned i = 0; i < trees_.size(); i++) {
     trees_[i]->traverseFromRoot(q, pqs[i], rs[i]);
   }
@@ -280,8 +273,7 @@ void ImageIndex::searchDescriptor(BinaryDescriptorPtr q,
     unsigned r_size = rs[i]->size();
     for (unsigned j = 0; j < r_size; j++) {
       DescriptorQueueItem r_item = rs[i]->get(j);
-      std::pair<std::unordered_set<BinaryDescriptorPtr>::iterator,
-                bool > result;
+      std::pair<std::unordered_set<BinaryDescriptorPtr>::iterator, bool> result;
       result = already_added.insert(r_item.desc);
       if (result.second) {
         r.push(r_item);
@@ -319,8 +311,8 @@ void ImageIndex::searchDescriptor(BinaryDescriptorPtr q,
 
       for (unsigned j = 0; j < tr->size(); j++) {
         DescriptorQueueItem r_item = tr->get(j);
-        std::pair<std::unordered_set<BinaryDescriptorPtr>::iterator,
-                bool > result;
+        std::pair<std::unordered_set<BinaryDescriptorPtr>::iterator, bool>
+            result;
         result = already_added.insert(r_item.desc);
         if (result.second) {
           r.push(r_item);
@@ -352,7 +344,7 @@ void ImageIndex::insertDescriptor(BinaryDescriptorPtr q) {
 
   // Indexing the descriptor inside each tree
   if (init_) {
-    #pragma omp parallel for
+#pragma omp parallel for
     for (unsigned i = 0; i < trees_.size(); i++) {
       trees_[i]->addDescriptor(q);
     }
@@ -362,7 +354,7 @@ void ImageIndex::insertDescriptor(BinaryDescriptorPtr q) {
 void ImageIndex::deleteDescriptor(BinaryDescriptorPtr q) {
   // Deleting the descriptor from each tree
   if (init_) {
-    #pragma omp parallel for
+#pragma omp parallel for
     for (unsigned i = 0; i < trees_.size(); i++) {
       trees_[i]->deleteDescriptor(q);
     }
@@ -376,9 +368,9 @@ void ImageIndex::deleteDescriptor(BinaryDescriptorPtr q) {
 }
 
 void ImageIndex::getMatchings(
-      const std::vector<cv::KeyPoint>& query_kps,
-      const std::vector<cv::DMatch>& matches,
-      std::unordered_map<unsigned, PointMatches>* point_matches) {
+    const std::vector<cv::KeyPoint>& query_kps,
+    const std::vector<cv::DMatch>& matches,
+    std::unordered_map<unsigned, PointMatches>* point_matches) {
   for (unsigned i = 0; i < matches.size(); i++) {
     // Getting the query point
     int qid = matches[i].queryIdx;

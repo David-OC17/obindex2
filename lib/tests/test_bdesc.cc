@@ -1,27 +1,27 @@
 /**
-* This file is part of obindex2.
-*
-* Copyright (C) 2017 Emilio Garcia-Fidalgo <emilio.garcia@uib.es> (University of the Balearic Islands)
-*
-* obindex2 is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* obindex2 is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with obindex2. If not, see <http://www.gnu.org/licenses/>.
-*/
+ * This file is part of obindex2.
+ *
+ * Copyright (C) 2017 Emilio Garcia-Fidalgo <emilio.garcia@uib.es> (University
+ * of the Balearic Islands)
+ *
+ * obindex2 is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * obindex2 is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with obindex2. If not, see <http://www.gnu.org/licenses/>.
+ */
 
 #define CATCH_CONFIG_MAIN
-#include "catch.hpp"
-
 #include <opencv2/xfeatures2d.hpp>
 
+#include "catch.hpp"
 #include "obindex2/binary_descriptor.h"
 
 TEST_CASE("BD: self-created descriptors", "[bdesc]") {
@@ -42,8 +42,7 @@ TEST_CASE("BD: self-created descriptors", "[bdesc]") {
   REQUIRE(d1 != d2);
 
   // Validating the Hamming distance
-  int dist = static_cast<int>(
-                obindex2::BinaryDescriptor::distHamming(d1, d2));
+  int dist = static_cast<int>(obindex2::BinaryDescriptor::distHamming(d1, d2));
   REQUIRE(dist == 256);
 
   // Resetting original bits
@@ -78,10 +77,9 @@ TEST_CASE("BD: assigning descriptors", "[bdesc]") {
 
 TEST_CASE("BD: create descriptors from cv::Mat", "[bdesc]") {
   // Creating feature detector and descriptor
-  cv::Ptr<cv::FastFeatureDetector> det =
-          cv::FastFeatureDetector::create();
+  cv::Ptr<cv::FastFeatureDetector> det = cv::FastFeatureDetector::create();
   cv::Ptr<cv::xfeatures2d::BriefDescriptorExtractor> des =
-          cv::xfeatures2d::BriefDescriptorExtractor::create();
+      cv::xfeatures2d::BriefDescriptorExtractor::create();
 
   // Loading the test image
   cv::Mat img = cv::imread("image00.jpg");

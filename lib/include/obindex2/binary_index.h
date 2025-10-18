@@ -1,21 +1,22 @@
 /**
-* This file is part of obindex2.
-*
-* Copyright (C) 2017 Emilio Garcia-Fidalgo <emilio.garcia@uib.es> (University of the Balearic Islands)
-*
-* obindex2 is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* obindex2 is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with obindex2. If not, see <http://www.gnu.org/licenses/>.
-*/
+ * This file is part of obindex2.
+ *
+ * Copyright (C) 2017 Emilio Garcia-Fidalgo <emilio.garcia@uib.es> (University
+ * of the Balearic Islands)
+ *
+ * obindex2 is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * obindex2 is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with obindex2. If not, see <http://www.gnu.org/licenses/>.
+ */
 
 #ifndef LIB_INCLUDE_OBINDEX2_BINARY_INDEX_H_
 #define LIB_INCLUDE_OBINDEX2_BINARY_INDEX_H_
@@ -29,28 +30,14 @@
 
 namespace obindex2 {
 
-enum MergePolicy {
-  MERGE_POLICY_NONE,
-  MERGE_POLICY_AND,
-  MERGE_POLICY_OR
-};
+enum MergePolicy { MERGE_POLICY_NONE, MERGE_POLICY_AND, MERGE_POLICY_OR };
 
 struct InvIndexItem {
-  InvIndexItem() :
-      image_id(0),
-      pt(0.0f, 0.0f),
-      dist(DBL_MAX),
-      kp_ind(-1) {}
+  InvIndexItem() : image_id(0), pt(0.0f, 0.0f), dist(DBL_MAX), kp_ind(-1) {}
 
-  InvIndexItem(const int id,
-               const cv::Point2f kp,
-               const double d,
-               const int kp_i = -1) :
-  image_id(id),
-  pt(kp),
-  dist(d),
-  kp_ind(kp_i)
-  {}
+  InvIndexItem(const int id, const cv::Point2f kp, const double d,
+               const int kp_i = -1)
+      : image_id(id), pt(kp), dist(d), kp_ind(kp_i) {}
 
   unsigned image_id;
   cv::Point2f pt;
@@ -59,18 +46,15 @@ struct InvIndexItem {
 };
 
 struct ImageMatch {
-  ImageMatch() :
-      image_id(-1),
-      score(0.0) {}
+  ImageMatch() : image_id(-1), score(0.0) {}
 
-  explicit ImageMatch(const int id, const double sc = 0.0) :
-      image_id(id),
-      score(sc) {}
+  explicit ImageMatch(const int id, const double sc = 0.0)
+      : image_id(id), score(sc) {}
 
   int image_id;
   double score;
 
-  bool operator<(const ImageMatch &lcr) const { return score > lcr.score; }
+  bool operator<(const ImageMatch& lcr) const { return score > lcr.score; }
 };
 
 struct PointMatches {
@@ -81,40 +65,30 @@ struct PointMatches {
 class ImageIndex {
  public:
   // Constructors
-  explicit ImageIndex(const unsigned k = 16,
-                      const unsigned s = 150,
+  explicit ImageIndex(const unsigned k = 16, const unsigned s = 150,
                       const unsigned t = 4,
                       const MergePolicy merge_policy = MERGE_POLICY_NONE,
                       const bool purge_descriptors = true,
                       const unsigned min_feat_apps = 3);
 
   // Methods
-  void addImage(const unsigned image_id,
-                const std::vector<cv::KeyPoint>& kps,
+  void addImage(const unsigned image_id, const std::vector<cv::KeyPoint>& kps,
                 const cv::Mat& descs);
-  void addImage(const unsigned image_id,
-                const std::vector<cv::KeyPoint>& kps,
-                const cv::Mat& descs,
-                const std::vector<cv::DMatch>& matches);
+  void addImage(const unsigned image_id, const std::vector<cv::KeyPoint>& kps,
+                const cv::Mat& descs, const std::vector<cv::DMatch>& matches);
   void searchImages(const cv::Mat& descs,
                     const std::vector<cv::DMatch>& gmatches,
-                    std::vector<ImageMatch>* img_matches,
-                    bool sort = true);
+                    std::vector<ImageMatch>* img_matches, bool sort = true);
   void searchDescriptors(const cv::Mat& descs,
                          std::vector<std::vector<cv::DMatch> >* matches,
-                         const unsigned knn = 2,
-                         const unsigned checks = 32);
+                         const unsigned knn = 2, const unsigned checks = 32);
   void deleteDescriptor(const unsigned desc_id);
   void getMatchings(const std::vector<cv::KeyPoint>& query_kps,
                     const std::vector<cv::DMatch>& matches,
                     std::unordered_map<unsigned, PointMatches>* point_matches);
-  inline unsigned numImages() {
-    return nimages_;
-  }
+  inline unsigned numImages() { return nimages_; }
 
-  inline unsigned numDescriptors() {
-    return dset_.size();
-  }
+  inline unsigned numDescriptors() { return dset_.size(); }
 
   inline void rebuild() {
     if (init_) {
@@ -136,8 +110,8 @@ class ImageIndex {
   unsigned min_feat_apps_;
 
   std::vector<BinaryTreePtr> trees_;
-  std::unordered_map<BinaryDescriptorPtr,
-                     std::vector<InvIndexItem> > inv_index_;
+  std::unordered_map<BinaryDescriptorPtr, std::vector<InvIndexItem> >
+      inv_index_;
   std::unordered_map<BinaryDescriptorPtr, unsigned> desc_to_id_;
   std::unordered_map<unsigned, BinaryDescriptorPtr> id_to_desc_;
   std::list<BinaryDescriptorPtr> recently_added_;
@@ -145,8 +119,7 @@ class ImageIndex {
   void initTrees();
   void searchDescriptor(BinaryDescriptorPtr q,
                         std::vector<BinaryDescriptorPtr>* neigh,
-                        std::vector<double>* distances,
-                        unsigned knn = 2,
+                        std::vector<double>* distances, unsigned knn = 2,
                         unsigned checks = 32);
   void insertDescriptor(BinaryDescriptorPtr q);
   void deleteDescriptor(BinaryDescriptorPtr q);

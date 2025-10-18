@@ -1,21 +1,22 @@
 /**
-* This file is part of obindex2.
-*
-* Copyright (C) 2017 Emilio Garcia-Fidalgo <emilio.garcia@uib.es> (University of the Balearic Islands)
-*
-* obindex2 is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* obindex2 is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with obindex2. If not, see <http://www.gnu.org/licenses/>.
-*/
+ * This file is part of obindex2.
+ *
+ * Copyright (C) 2017 Emilio Garcia-Fidalgo <emilio.garcia@uib.es> (University
+ * of the Balearic Islands)
+ *
+ * obindex2 is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * obindex2 is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with obindex2. If not, see <http://www.gnu.org/licenses/>.
+ */
 
 #ifndef LIB_INCLUDE_OBINDEX2_BINARY_TREE_H_
 #define LIB_INCLUDE_OBINDEX2_BINARY_TREE_H_
@@ -34,35 +35,25 @@ namespace obindex2 {
 class BinaryTree {
  public:
   // Constructors
-  explicit BinaryTree(BinaryDescriptorSetPtr dset,
-                      const unsigned tree_id = 0,
-                      const unsigned k = 16,
-                      const unsigned s = 150);
+  explicit BinaryTree(BinaryDescriptorSetPtr dset, const unsigned tree_id = 0,
+                      const unsigned k = 16, const unsigned s = 150);
   virtual ~BinaryTree();
 
   // Methods
   void buildTree();
   void deleteTree();
-  unsigned traverseFromRoot(BinaryDescriptorPtr q,
-                            NodeQueuePtr pq,
+  unsigned traverseFromRoot(BinaryDescriptorPtr q, NodeQueuePtr pq,
                             DescriptorQueuePtr r);
-  void traverseFromNode(BinaryDescriptorPtr q,
-                        BinaryTreeNodePtr n,
-                        NodeQueuePtr pq,
-                        DescriptorQueuePtr r);
+  void traverseFromNode(BinaryDescriptorPtr q, BinaryTreeNodePtr n,
+                        NodeQueuePtr pq, DescriptorQueuePtr r);
   BinaryTreeNodePtr searchFromRoot(BinaryDescriptorPtr q);
-  BinaryTreeNodePtr searchFromNode(BinaryDescriptorPtr q,
-                                   BinaryTreeNodePtr n);
+  BinaryTreeNodePtr searchFromNode(BinaryDescriptorPtr q, BinaryTreeNodePtr n);
   void addDescriptor(BinaryDescriptorPtr q);
   void deleteDescriptor(BinaryDescriptorPtr q);
   void printTree();
-  inline unsigned numDegradedNodes() {
-    return degraded_nodes_;
-  }
+  inline unsigned numDegradedNodes() { return degraded_nodes_; }
 
-  inline unsigned numNodes() {
-    return nset_.size();
-  }
+  inline unsigned numNodes() { return nset_.size(); }
 
  private:
   BinaryDescriptorSetPtr dset_;

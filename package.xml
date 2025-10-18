@@ -13,13 +13,10 @@
   <license>GPL</license>
   <url type="website">http://wiki.ros.org/obindex2</url>
 
-  <!-- ROS2 uses ament_cmake instead of catkin -->
   <buildtool_depend>ament_cmake</buildtool_depend>
 
-  <!-- Core dependencies -->
   <depend>rclcpp</depend>
 
-  <!-- Export section -->
   <export>
     <build_type>ament_cmake</build_type>
   </export>
