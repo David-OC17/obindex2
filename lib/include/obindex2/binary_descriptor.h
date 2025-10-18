@@ -72,12 +72,12 @@ class BinaryDescriptor {
   }
 
   // Operator overloading
-  inline bool operator==(const BinaryDescriptor& d) {
+  inline bool operator==(const BinaryDescriptor& d) const {
     int hamming = cv::hal::normHamming(bits_, d.bits_, size_in_bytes_);
     return hamming == 0;
   }
 
-  inline bool operator!=(const BinaryDescriptor& d) {
+  inline bool operator!=(const BinaryDescriptor& d) const {
     int hamming = cv::hal::normHamming(bits_, d.bits_, size_in_bytes_);
     return hamming != 0;
   }

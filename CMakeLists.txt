@@ -1,20 +1,14 @@
-cmake_minimum_required(VERSION 3.1 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.5)
 project(obindex2 LANGUAGES CXX)
 
-# Catkin dependencies
-find_package(catkin REQUIRED COMPONENTS roscpp)
+find_package(ament_cmake REQUIRED)
+find_package(rclcpp REQUIRED)
 
-# Defining the package
-catkin_package(
-    INCLUDE_DIRS lib/include
-    LIBRARIES obindex2
-    CATKIN_DEPENDS roscpp
-    DEPENDS
-)
-
-###########
-## Build ##
-###########
-
-# Compiling the library
 add_subdirectory(lib)
+
+# Export
+ament_export_include_directories(lib/include)
+ament_export_libraries(obindex2)
+ament_export_dependencies(rclcpp)
+
+ament_package()

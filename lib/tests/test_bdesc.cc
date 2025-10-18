@@ -18,10 +18,9 @@
 */
 
 #define CATCH_CONFIG_MAIN
+#include "catch.hpp"
 
 #include <opencv2/xfeatures2d.hpp>
-
-#include "catch/catch.hpp"
 
 #include "obindex2/binary_descriptor.h"
 
